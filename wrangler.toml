@@ -1,0 +1,20 @@
+name = "ans-cn"
+main = "build/worker/shim.mjs"
+compatibility_date = "2024-10-10"
+
+routes = [
+    { pattern = "ans-cn.oio.sd", custom_domain = true }
+]
+workers_dev = false
+
+[build]
+command = "pnpm --prefix assets run build && cargo install -q worker-build && worker-build --release"
+
+[assets]
+directory = "./assets/out"
+
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
