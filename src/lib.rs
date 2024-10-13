@@ -2,6 +2,8 @@ use axum::{routing::get, Router};
 use tower_service::Service;
 use worker::*;
 
+mod crawler;
+
 pub async fn hello_world() -> &'static str {
     "Hello World!"
 }
