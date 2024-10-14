@@ -2,14 +2,16 @@ use axum::{routing::get, Router};
 use tower_service::Service;
 use worker::*;
 
-mod crawler;
+mod asn;
+
 
 pub async fn hello_world() -> &'static str {
     "Hello World!"
 }
 
 fn router() -> Router {
-    Router::new().route("/api/hello-world", get(hello_world))
+    Router::new()
+        .route("/api/hello-world", get(hello_world))
 }
 
 fn log_request(req: &HttpRequest) {
@@ -36,5 +38,13 @@ pub async fn fetch(
 
 #[event(scheduled)]
 pub async fn scheduled(_: ScheduledEvent, _: Env, _: ScheduleContext) {
-    console_log!("Scheduled Event!");
+    let srv = asn::service::ASNsService::new();
+    match srv.get_asn().await {
+        Ok(asn_list) => {
+            for asn in &asn_list {
+                console_log!("[AS{}]: {}", asn.number, asn.name);
+            }
+        }
+        Err(e) => console_error!("Error: {:?}", e),
+    }
 }

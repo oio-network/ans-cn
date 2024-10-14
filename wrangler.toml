@@ -14,7 +14,7 @@ command = "pnpm --prefix assets run build && cargo install -q worker-build && wo
 directory = "./assets/out"
 
 [triggers]
-crons = ["* * * * *"]
+crons = ["*/15 * * * *"]
 
 [observability]
 enabled = true
