@@ -1,3 +1,4 @@
+mod crawler;
 pub mod model;
 pub mod service;
-mod crawler;
+pub mod routes;
