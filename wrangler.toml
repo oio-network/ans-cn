@@ -7,19 +7,19 @@ routes = [
 ]
 workers_dev = false
 
-[build]
-command = "pnpm --prefix assets run build && cargo install -q worker-build && worker-build --release"
-
-[assets]
-directory = "./assets/out"
-
 [triggers]
-crons = ["*/15 * * * *"]
+crons = ["0 0 * * *"]
 
-[observability]
-enabled = true
+[build]
+command = "pnpm run build && cargo install -q worker-build && worker-build --release"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "asn-cn"
 database_id = "3652d109-2609-4a27-b7c5-b176e51e47b1"
+
+[observability]
+enabled = true
+
+[assets]
+directory = "./assets/out"

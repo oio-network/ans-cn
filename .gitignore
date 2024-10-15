@@ -24,6 +24,9 @@ Cargo.lock
 
 .wrangler
 
+# turbo
+.turbo
+
 # dependencies
 **/node_modules
 **/pnpm-lock.yaml
