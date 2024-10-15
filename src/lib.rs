@@ -7,10 +7,12 @@ mod asn;
 
 fn log_request(req: &HttpRequest) {
     console_log!(
-        "[{}] {} - {}",
+        r"{} [{}] {} {:?} {}",
+        req.headers().get("CF-Connecting-IP").unwrap().to_str().unwrap_or_else(|_| "-"),
         req.method(),
         req.uri().path(),
-        Date::now().to_string()
+        req.version(),
+        Date::now().to_string(),
     );
 }
 
