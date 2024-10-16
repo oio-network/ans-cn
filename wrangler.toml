@@ -18,6 +18,10 @@ binding = "DB"
 database_name = "asn-cn"
 database_id = "3652d109-2609-4a27-b7c5-b176e51e47b1"
 
+[[kv_namespaces]]
+binding = "kv"
+id = "cae722bec8644af4a3b6f7f9333b646e"
+
 [observability]
 enabled = true
 

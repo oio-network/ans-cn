@@ -1,5 +1,5 @@
-use std::hash::{Hash, Hasher};
 use serde::{Deserialize, Serialize};
+use std::hash::{Hash, Hasher};
 
 #[derive(Debug, Eq, Serialize, Deserialize)]
 pub struct ASN {
