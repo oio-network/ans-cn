@@ -16,6 +16,8 @@ pub enum ISP {
 pub struct ASN {
     pub number: String,
     pub name: String,
+
+    #[serde(skip_serializing)]
     pub isp: ISP,
 }
 
