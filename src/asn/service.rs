@@ -1,4 +1,4 @@
-use crate::asn::crawler::Crawler;
+use crate::asn::crawler::{Crawler, CrawlerConfig};
 use crate::asn::model::ASN;
 use futures::future::try_join;
 use std::collections::HashSet;
@@ -16,7 +16,7 @@ impl ASNsService {
     pub fn new(env: Env) -> Self {
         ASNsService {
             env,
-            crawler: Crawler::new(),
+            crawler: Crawler::new(CrawlerConfig::default()),
         }
     }
 
