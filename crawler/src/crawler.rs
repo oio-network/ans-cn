@@ -1,12 +1,13 @@
-use crate::asn::model::{ASN, ISP};
 use lazy_static::lazy_static;
 use regex::{Regex, RegexBuilder};
 use reqwest::{
     header::{HeaderMap, USER_AGENT},
-    Client, IntoUrl,
+    Client, Error, IntoUrl,
 };
-use std::collections::{HashMap, HashSet};
-use worker::{Error, Result};
+use std::collections::HashMap;
+use std::result::Result;
+
+use entity::{asn, asn::ISP};
 
 pub struct CrawlerConfig {
     headers: HeaderMap,
@@ -65,40 +66,36 @@ impl Crawler {
         }
     }
 
-    pub async fn asn<U: IntoUrl>(&self, url: U) -> Result<HashSet<ASN>> {
-        let resp = match self
+    pub async fn asn<U: IntoUrl>(&self, url: U) -> Result<Vec<asn::Model>, Error> {
+        let resp = self
             .client
             .get(url)
             .headers(self.config.headers.clone())
             .send()
-            .await
-        {
-            Ok(resp) => resp,
-            Err(e) => return Err(Error::RustError(format!("failed to fetch: {:?}", e))),
-        };
+            .await?;
 
-        match resp.text().await {
-            Ok(text) => Ok(self.extract_asn(text.as_str()).await),
-            Err(e) => Err(Error::RustError(format!(
-                "failed to read response: {:?}",
-                e
-            ))),
-        }
+        Ok(self.extract_asn(resp.text().await?.as_str()).await)
     }
 
-    async fn extract_asn(&self, text: &str) -> HashSet<ASN> {
+    async fn extract_asn(&self, text: &str) -> Vec<asn::Model> {
         self.row_re
             .find_iter(text)
             .flat_map(|row| self.asn_re.captures_iter(row.as_str()))
             .map(|data| {
                 let (_, [name, asn]) = data.extract();
                 let isp = self.determine_isp(name);
-                ASN {
-                    number: asn.to_string(),
-                    name: name.to_string(),
-                    isp,
-                }
+                (
+                    asn.to_string(),
+                    asn::Model {
+                        number: asn.to_string(),
+                        name: name.to_string(),
+                        isp,
+                        ..Default::default()
+                    },
+                )
             })
+            .collect::<HashMap<String, asn::Model>>()
+            .into_values()
             .collect()
     }
 

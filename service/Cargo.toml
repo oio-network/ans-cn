@@ -1,0 +1,31 @@
+[package]
+name = "service"
+version = "0.1.0"
+edition = "2021"
+publish = false
+authors = ["Homing So <i@homing.so>"]
+
+[lib]
+name = "service"
+path = "src/lib.rs"
+
+[dependencies]
+serde_json = { version = "1" }
+async-trait = { version = "0.1" }
+
+worker = { version = "0.4.2", features = ["d1"] }
+
+chrono = { version = "0.4.38" }
+
+wasm-bindgen = { version = "0.2.95" }
+wasm-bindgen-futures = { version = "0.4.45" }
+oneshot = { version = "0.1" }
+
+sea-orm = { version = "1.1.0", features = [
+    "proxy",
+    "with-chrono",
+    "with-json",
+], default-features = false }
+
+entity = { path = "../entity" }
+crawler = { path = "../crawler" }

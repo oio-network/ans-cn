@@ -16,7 +16,7 @@ command = "pnpm run build && cargo install -q worker-build && worker-build --rel
 [[d1_databases]]
 binding = "DB"
 database_name = "asn-cn"
-database_id = "3652d109-2609-4a27-b7c5-b176e51e47b1"
+database_id = "89656785-6497-4443-b778-d2564651efed"
 
 [[kv_namespaces]]
 binding = "kv"

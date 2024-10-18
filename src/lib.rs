@@ -1,9 +1,11 @@
-use crate::asn::routes::make_router;
-use crate::asn::service::ASNsService;
+use axum;
+use std::sync::Arc;
 use tower_service::Service;
 use worker::*;
 
-mod asn;
+use api::router;
+use crawler::{Crawler, CrawlerConfig};
+use service::Mutation;
 
 fn log_request(req: &HttpRequest) {
     console_log!(
@@ -30,23 +32,22 @@ pub async fn fetch(
 
     console_error_panic_hook::set_once();
 
-    let mut router = make_router(env);
-
-    Ok(router.call(req).await?)
+    Ok(router(Arc::new(env)).call(req).await?)
 }
 
 #[event(scheduled)]
 pub async fn scheduled(_: ScheduledEvent, env: Env, _: ScheduleContext) {
-    let srv = ASNsService::new(env);
-    match srv.crawl_asn().await {
-        Ok(asn_list) => {
-            srv.delete_all_asn()
-                .await
-                .expect("failed to delete all ASNs");
-            srv.batch_create_asn(Vec::from_iter(asn_list))
-                .await
-                .expect("failed to batch create ASNs");
+    match Crawler::new(CrawlerConfig::default())
+        .asn("https://whois.ipip.net/iso/CN")
+        .await
+    {
+        Ok(asns) => Mutation::bulk_upsert(Arc::new(env), asns)
+            .await
+            .unwrap_or_else(|e| {
+                console_error!("Error: {:?}", e);
+            }),
+        Err(e) => {
+            console_error!("Error: {:?}", e)
         }
-        Err(e) => console_error!("Error: {:?}", e),
     }
 }
