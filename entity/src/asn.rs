@@ -41,10 +41,10 @@ pub enum ISP {
 #[derive(Clone, Debug, Default, Eq, DeriveEntityModel, Deserialize, Serialize)]
 #[sea_orm(table_name = "asns")]
 pub struct Model {
-    pub updated_at: DateTime,
+    pub updated_at: i64,
 
     #[sea_orm(primary_key)]
-    pub id: i32,
+    pub id: i64,
     #[sea_orm(unique, indexed)]
     pub number: String,
     pub name: String,

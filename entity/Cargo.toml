@@ -11,5 +11,4 @@ path = "src/lib.rs"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
-chrono = { version = "0.4", features = ["serde"] }
-sea-orm = { version = "1.1.0", features = ["macros", "with-chrono"], default-features = false }
+sea-orm = { version = "1.1.0", features = ["macros"], default-features = false }

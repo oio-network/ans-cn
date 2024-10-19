@@ -48,12 +48,6 @@ impl D1Proxy {
                     Value::Json(Some(val)) => JsValue::from(val.to_string()),
                     Value::String(Some(val)) => JsValue::from(val.to_string()),
 
-                    Value::ChronoDate(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTime(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeLocal(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeUtc(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeWithTimeZone(Some(val)) => JsValue::from(val.to_string()),
-
                     _ => JsValue::NULL,
                 })
                 .collect(),
@@ -132,12 +126,6 @@ impl D1Proxy {
                     Value::Char(Some(val)) => JsValue::from(val.to_string()),
                     Value::Json(Some(val)) => JsValue::from(val.to_string()),
                     Value::String(Some(val)) => JsValue::from(val.to_string()),
-
-                    Value::ChronoDate(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTime(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeLocal(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeUtc(Some(val)) => JsValue::from(val.to_string()),
-                    Value::ChronoDateTimeWithTimeZone(Some(val)) => JsValue::from(val.to_string()),
 
                     _ => JsValue::NULL,
                 })

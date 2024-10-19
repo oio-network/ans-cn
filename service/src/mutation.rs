@@ -3,13 +3,13 @@ use sea_orm::{ActiveValue::Set, *};
 use std::sync::Arc;
 use worker::{Env, Error, Result};
 
-use ::entity::{asn, asn::Entity as ASN, chrono};
+use ::entity::{asn, asn::Entity as ASN};
 
 pub struct Mutation;
 
 impl Mutation {
     pub async fn bulk_upsert(env: Arc<Env>, asns: Vec<asn::Model>) -> Result<()> {
-        let now = chrono::Utc::now().naive_utc();
+        let now = chrono::Utc::now().timestamp_millis();
         let inserts: Vec<asn::ActiveModel> = asns
             .iter()
             .map(|model| asn::ActiveModel {
@@ -42,11 +42,11 @@ impl Mutation {
     }
 
     pub async fn delete_expired(env: Arc<Env>, expired_in: chrono::Duration) -> Result<()> {
-        let now = chrono::Utc::now().naive_utc();
+        let now = chrono::Utc::now().timestamp_millis();
         let db = orm::d1(env, crate::DB_NAMESPACE.to_string()).await?;
 
         match ASN::delete_many()
-            .filter(asn::Column::UpdatedAt.gte(now - expired_in))
+            .filter(asn::Column::UpdatedAt.gte(now - expired_in.num_milliseconds()))
             .exec(&db)
             .await
         {
