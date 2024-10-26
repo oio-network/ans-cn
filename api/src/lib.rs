@@ -1,12 +1,11 @@
-use axum::{extract::State, routing::get};
 use std::sync::Arc;
-use worker::{Env, Request, Response, Result};
-
-use service::Query;
 
 pub use axum;
+use axum::{extract::State, routing::get};
 pub use service;
+use service::Query;
 pub use worker;
+use worker::{Env, Request, Response, Result};
 pub use worker_macros;
 
 macro_rules! handler {

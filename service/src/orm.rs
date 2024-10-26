@@ -1,10 +1,10 @@
 use std::{collections::BTreeMap, sync::Arc};
-use wasm_bindgen::JsValue;
 
 use sea_orm::{
     ConnectionTrait, Database, DatabaseConnection, DbBackend, DbErr, ProxyDatabaseTrait,
     ProxyExecResult, ProxyRow, RuntimeErr, Schema, Statement, Value, Values,
 };
+use wasm_bindgen::JsValue;
 use worker::{Env, Error, Result};
 
 struct D1Proxy {

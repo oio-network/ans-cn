@@ -1,11 +1,11 @@
-use axum;
 use std::sync::Arc;
-use tower_service::Service;
-use worker::*;
 
 use api::router;
+use axum;
 use crawler::{Crawler, CrawlerConfig};
 use service::Mutation;
+use tower_service::Service;
+use worker::*;
 
 fn log_request(req: &HttpRequest) {
     console_log!(

@@ -1,6 +1,7 @@
+use std::hash::{Hash, Hasher};
+
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::hash::{Hash, Hasher};
 
 #[derive(
     Clone,

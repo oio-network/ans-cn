@@ -1,13 +1,12 @@
+use std::{collections::HashMap, result::Result};
+
+use entity::{asn, asn::ISP};
 use lazy_static::lazy_static;
 use regex::{Regex, RegexBuilder};
 use reqwest::{
     header::{HeaderMap, USER_AGENT},
     Client, Error, IntoUrl,
 };
-use std::collections::HashMap;
-use std::result::Result;
-
-use entity::{asn, asn::ISP};
 
 pub struct CrawlerConfig {
     headers: HeaderMap,
@@ -16,7 +15,12 @@ pub struct CrawlerConfig {
 impl Default for CrawlerConfig {
     fn default() -> Self {
         let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36".parse().unwrap());
+        headers.insert(
+            USER_AGENT,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
+                .parse()
+                .unwrap(),
+        );
         Self { headers }
     }
 }
@@ -25,7 +29,10 @@ lazy_static! {
     static ref ISP_PATTERNS: HashMap<ISP, &'static str> = {
         let mut m = HashMap::new();
         m.insert(ISP::CT, r"CHINA ?TELECOM|CHINANET|CT (?:(?:SHANXI|JIANGXI|DONGGUAN|FOSHAN|ANQING|NEIMENGGU WULANCHABU|LIAONING SHENYANG|CHONGQING|HEFEI NANGANG|GUANGZHOU|HANGZHOU|HUNAN (?:HENGYANG|CHANGSHA)|CENTRALSOUTH CHINA) (?:MAN(?: ?2)?|IDC|IIP)|ESURFINGCLOUD CDN|CNGI)");
-        m.insert(ISP::CMCC, r"China (?:Mobile(?: Communications Corporation)?|TieTong(?: Telecommunications Corporation| SHANGHAI)?)");
+        m.insert(
+            ISP::CMCC,
+            r"China (?:Mobile(?: Communications Corporation)?|TieTong(?: Telecommunications Corporation| SHANGHAI)?)",
+        );
         m.insert(ISP::CU, r"UNICOM");
         m.insert(ISP::CERNET, r"CERNET");
         m.insert(ISP::CSTNET, r"CNIC-CAS");
