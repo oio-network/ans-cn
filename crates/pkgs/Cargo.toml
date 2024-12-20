@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-worker = { workspace = true, features = ["http", "d1"]}
-axum = { workspace = true, features = ["json"], default-features = false }
 serde = { workspace = true, features = ["derive"] }
+worker = { workspace = true, features = ["http", "d1"] }
+axum = { workspace = true, features = ["json"], default-features = false }
+sea-orm = { workspace = true, default-features = false }

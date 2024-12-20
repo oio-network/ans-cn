@@ -1,0 +1,31 @@
+[package]
+name = "data"
+version = "0.1.0"
+edition = "2021"
+publish = false
+authors = ["Homing So <i@homing.so>"]
+
+[lib]
+name = "data"
+path = "src/lib.rs"
+
+[dependencies]
+wasm-bindgen.workspace = true
+wasm-bindgen-futures.workspace = true
+
+async-trait.workspace = true
+chrono.workspace = true
+oneshot.workspace = true
+
+serde.workspace = true
+serde_json.workspace = true
+
+worker = { workspace = true, features = ["d1"] }
+sea-orm = { workspace = true, features = [
+    "proxy",
+    "with-json",
+], default-features = false }
+
+biz.workspace = true
+entity.workspace = true
+pkgs.workspace = true

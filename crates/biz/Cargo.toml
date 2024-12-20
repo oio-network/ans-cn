@@ -1,0 +1,19 @@
+[package]
+name = "biz"
+version = "0.1.0"
+edition = "2021"
+publish = false
+authors = ["Homing So <i@homing.so>"]
+
+[lib]
+name = "biz"
+path = "src/lib.rs"
+
+[dependencies]
+async-trait.workspace = true
+worker = { workspace = true, disable-features = true }
+axum = { workspace = true, features = ["json"], default-features = false }
+serde = { workspace = true, features = ["derive"] }
+
+entity.workspace = true
+pkgs.workspace = true
