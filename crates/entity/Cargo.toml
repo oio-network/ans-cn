@@ -10,5 +10,5 @@ name = "entity"
 path = "src/lib.rs"
 
 [dependencies]
-serde = { version = "1", features = ["derive"] }
-sea-orm = { version = "1.1.0", features = ["macros"], default-features = false }
+serde = { workspace = true, features = ["derive"] }
+sea-orm = { workspace = true, features = ["macros"], default-features = false }

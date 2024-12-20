@@ -5,11 +5,10 @@ edition = "2021"
 authors = ["Homing So <i@homing.so>"]
 
 [package.metadata.release]
-release = false
+release = true
 
-# https://github.com/rustwasm/wasm-pack/issues/1247
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = false
+wasm-opt = true
 
 [profile.release]
 lto = true
@@ -20,16 +19,45 @@ codegen-units = 1
 crate-type = ["cdylib"]
 
 [workspace]
-members = [".", "api", "crawler", "entity", "service"]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.dependencies]
+wasm-bindgen = { version = "0.2" }
+wasm-bindgen-futures = { version = "0.4" }
+
+async-trait = { version = "0.1" }
+lazy_static = { version = "1.5"}
+chrono = { version = "0.4" }
+oneshot = { version = "0.1" }
+
+serde = { version = "1" }
+serde_json = { version = "1" }
+
+regex = { version = "1.11" }
+reqwest = { version = "0.12"}
+
+sea-orm = { version = "1.1.0", features = [
+    "macros",
+    "proxy",
+    "with-json",
+], default-features = false }
+
+worker = { version = "0.5.0", features = ["http", "axum", "d1"] }
+axum = { version = "0.7.9", features = ["macros"], default-features = false }
+
+api = { path = "crates/api" }
+crawler = { path = "crates/crawler" }
+entity = { path = "crates/entity" }
+service = { path = "crates/service" }
 
 [dependencies]
-worker = { version = "0.4.2", features = ["http", "axum"] }
-worker-macros = { version = "0.4.2", features = ["http"] }
-axum = { version = "0.7.7", default-features = false }
+worker = { workspace = true, features = ["http", "axum"] }
+axum = { workspace = true, default-features = false }
 tower-service = "0.3.3"
 
 console_error_panic_hook = { version = "0.1.7" }
 
-crawler = { path = "crawler" }
-service = { path = "service" }
-api = { path = "api" }
+crawler.workspace = true
+service.workspace = true
+api.workspace = true

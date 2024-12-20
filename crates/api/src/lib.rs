@@ -1,12 +1,8 @@
 use std::sync::Arc;
 
-pub use axum;
 use axum::{extract::State, routing::get};
-pub use service;
 use service::Query;
-pub use worker;
 use worker::{Env, Request, Response, Result};
-pub use worker_macros;
 
 macro_rules! handler {
     ($name:path) => {

@@ -10,7 +10,8 @@ name = "crawler"
 path = "src/lib.rs"
 
 [dependencies]
-lazy_static = "1.5.0"
-regex = "1.11.0"
-reqwest = "0.12.8"
-entity = { path = "../entity" }
+lazy_static.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+
+entity.workspace = true
