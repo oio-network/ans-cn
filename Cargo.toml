@@ -44,7 +44,7 @@ sea-orm = { version = "1.1.0", features = [
 ], default-features = false }
 
 worker = { version = "0.5.0", features = ["http", "axum", "d1"] }
-axum = { version = "0.7.9", features = ["macros"], default-features = false }
+axum = { version = "0.7.9", features = ["macros", "json"], default-features = false }
 
 api = { path = "crates/api" }
 crawler = { path = "crates/crawler" }
