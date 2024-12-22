@@ -27,7 +27,7 @@ wasm-bindgen = { version = "0.2" }
 wasm-bindgen-futures = { version = "0.4" }
 
 async-trait = { version = "0.1" }
-lazy_static = { version = "1.5"}
+lazy_static = { version = "1.5" }
 chrono = { version = "0.4" }
 oneshot = { version = "0.1" }
 
@@ -35,7 +35,7 @@ serde = { version = "1" }
 serde_json = { version = "1" }
 
 regex = { version = "1.11" }
-reqwest = { version = "0.12"}
+reqwest = { version = "0.12" }
 
 sea-orm = { version = "1.1.0", features = [
     "macros",
@@ -47,13 +47,11 @@ worker = { version = "0.5.0", features = ["http", "axum", "d1"] }
 axum = { version = "0.7.9", features = ["macros", "json"], default-features = false }
 
 biz = { path = "crates/biz" }
-data = { path = "crates/data" }
-pkgs = { path = "crates/pkgs" }
-
-api = { path = "crates/api" }
 crawler = { path = "crates/crawler" }
+data = { path = "crates/data" }
 entity = { path = "crates/entity" }
-service = { path = "crates/service" }
+pkgs = { path = "crates/pkgs" }
+routes = { path = "crates/routes" }
 
 [dependencies]
 worker = { workspace = true, features = ["http", "axum"] }
@@ -62,6 +60,7 @@ tower-service = "0.3.3"
 
 console_error_panic_hook = { version = "0.1.7" }
 
+biz.workspace = true
 crawler.workspace = true
-service.workspace = true
-api.workspace = true
+data.workspace = true
+routes.workspace = true

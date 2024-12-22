@@ -5,17 +5,20 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use sea_orm::error::{ConnAcquireErr, DbErr, RuntimeErr, SqlErr};
+use reqwest::Error as ReqwestError;
+use sea_orm::error::DbErr;
 use serde::Serialize;
-use worker::Error as WorkerError;
+use serde_json::Error as SerdeJsonError;
+use worker::{kv::KvError, Error as WorkerError};
 
+#[derive(Debug)]
 pub enum Error {
     JsonRejection(JsonRejection),
+    SerdeJsonError(SerdeJsonError),
     WorkerError(WorkerError),
-    ConnAcquireErr(ConnAcquireErr),
+    KvError(KvError),
     DbErr(DbErr),
-    RuntimeErr(RuntimeErr),
-    SqlErr(SqlErr),
+    ReqwestError(ReqwestError),
     InternalServerError,
 }
 
@@ -29,11 +32,11 @@ impl IntoResponse for Error {
 
         let (code, message) = match self {
             Error::JsonRejection(rejection) => (rejection.status(), rejection.body_text()),
+            Error::SerdeJsonError(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
             Error::WorkerError(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
-            Error::ConnAcquireErr(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
+            Error::KvError(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
             Error::DbErr(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
-            Error::RuntimeErr(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
-            Error::SqlErr(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
+            Error::ReqwestError(error) => (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()),
             Error::InternalServerError => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Internal Server Error".to_string(),
@@ -52,5 +55,35 @@ impl IntoResponse for Error {
 impl From<JsonRejection> for Error {
     fn from(value: JsonRejection) -> Self {
         Self::JsonRejection(value)
+    }
+}
+
+impl From<SerdeJsonError> for Error {
+    fn from(value: SerdeJsonError) -> Self {
+        Self::SerdeJsonError(value)
+    }
+}
+
+impl From<WorkerError> for Error {
+    fn from(value: WorkerError) -> Self {
+        Self::WorkerError(value)
+    }
+}
+
+impl From<KvError> for Error {
+    fn from(value: KvError) -> Self {
+        Self::KvError(value)
+    }
+}
+
+impl From<DbErr> for Error {
+    fn from(value: DbErr) -> Self {
+        Self::DbErr(value)
+    }
+}
+
+impl From<ReqwestError> for Error {
+    fn from(value: ReqwestError) -> Self {
+        Self::ReqwestError(value)
     }
 }

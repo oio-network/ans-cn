@@ -2,9 +2,17 @@
 name = "pkgs"
 version = "0.1.0"
 edition = "2021"
+publish = false
+authors = ["Homing So <i@homing.so>"]
+
+[lib]
+name = "pkgs"
+path = "src/lib.rs"
 
 [dependencies]
 serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
 worker = { workspace = true, features = ["http", "d1"] }
 axum = { workspace = true, features = ["json"], default-features = false }
 sea-orm = { workspace = true, default-features = false }
+reqwest = { workspace = true }

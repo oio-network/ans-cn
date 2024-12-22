@@ -27,5 +27,6 @@ sea-orm = { workspace = true, features = [
 ], default-features = false }
 
 biz.workspace = true
+crawler.workspace = true
 entity.workspace = true
 pkgs.workspace = true

@@ -11,9 +11,11 @@ path = "src/lib.rs"
 
 [dependencies]
 async-trait.workspace = true
-worker = { workspace = true, disable-features = true }
+chrono.workspace = true
+worker.workspace = true
 axum = { workspace = true, features = ["json"], default-features = false }
 serde = { workspace = true, features = ["derive"] }
 
+crawler.workspace = true
 entity.workspace = true
 pkgs.workspace = true

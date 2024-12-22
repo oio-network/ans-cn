@@ -1,25 +1,29 @@
-use std::{collections::BTreeMap, sync::Arc};
-
+use pkgs::Error;
 use sea_orm::{
     ConnectionTrait, Database, DatabaseConnection, DbBackend, DbErr, ProxyDatabaseTrait,
     ProxyExecResult, ProxyRow, RuntimeErr, Schema, Statement, Value, Values,
 };
+use std::{collections::BTreeMap, fmt::Debug, fmt::Write, sync::Arc};
 use wasm_bindgen::JsValue;
-use worker::{Env, Error, Result};
+use worker::{Env, Result as WorkerResult};
 
 struct D1Proxy {
     env: Arc<Env>,
     binding: String,
 }
 
-impl std::fmt::Debug for D1Proxy {
+impl Debug for D1Proxy {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("D1Proxy").finish()
     }
 }
 
 impl D1Proxy {
-    async fn query(env: Arc<Env>, binding: String, statement: Statement) -> Result<Vec<ProxyRow>> {
+    async fn query(
+        env: Arc<Env>,
+        binding: String,
+        statement: Statement,
+    ) -> WorkerResult<Vec<ProxyRow>> {
         let sql = statement.sql.clone();
         let values = match statement.values {
             Some(Values(values)) => values
@@ -40,9 +44,10 @@ impl D1Proxy {
                     Value::Bool(Some(val)) => JsValue::from(*val),
                     Value::Bytes(Some(val)) => JsValue::from(format!(
                         "X'{}'",
-                        val.iter()
-                            .map(|byte| format!("{:02x}", byte))
-                            .collect::<String>()
+                        val.iter().fold(String::new(), |mut out, byte| {
+                            let _ = write!(out, "{:02x}", byte);
+                            out
+                        })
                     )),
                     Value::Char(Some(val)) => JsValue::from(val.to_string()),
                     Value::Json(Some(val)) => JsValue::from(val.to_string()),
@@ -98,7 +103,7 @@ impl D1Proxy {
         env: Arc<Env>,
         binding: String,
         statement: Statement,
-    ) -> Result<ProxyExecResult> {
+    ) -> WorkerResult<ProxyExecResult> {
         let sql = statement.sql.clone();
         let values = match statement.values {
             Some(Values(values)) => values
@@ -119,9 +124,10 @@ impl D1Proxy {
                     Value::Bool(Some(val)) => JsValue::from(*val),
                     Value::Bytes(Some(val)) => JsValue::from(format!(
                         "X'{}'",
-                        val.iter()
-                            .map(|byte| format!("{:02x}", byte))
-                            .collect::<String>()
+                        val.iter().fold(String::new(), |mut out, byte| {
+                            let _ = write!(out, "{:02x}", byte);
+                            out
+                        })
                     )),
                     Value::Char(Some(val)) => JsValue::from(val.to_string()),
                     Value::Json(Some(val)) => JsValue::from(val.to_string()),
@@ -159,7 +165,7 @@ impl D1Proxy {
 
 #[async_trait::async_trait]
 impl ProxyDatabaseTrait for D1Proxy {
-    async fn query(&self, statement: Statement) -> std::result::Result<Vec<ProxyRow>, DbErr> {
+    async fn query(&self, statement: Statement) -> Result<Vec<ProxyRow>, DbErr> {
         let (env, binding) = (self.env.clone(), self.binding.clone());
         let (tx, rx) = oneshot::channel();
         wasm_bindgen_futures::spawn_local(async move {
@@ -171,7 +177,7 @@ impl ProxyDatabaseTrait for D1Proxy {
         ret.map_err(|err| DbErr::Conn(RuntimeErr::Internal(err.to_string())))
     }
 
-    async fn execute(&self, statement: Statement) -> std::result::Result<ProxyExecResult, DbErr> {
+    async fn execute(&self, statement: Statement) -> Result<ProxyExecResult, DbErr> {
         let (env, binding) = (self.env.clone(), self.binding.clone());
         let (tx, rx) = oneshot::channel();
         wasm_bindgen_futures::spawn_local(async move {
@@ -184,13 +190,12 @@ impl ProxyDatabaseTrait for D1Proxy {
     }
 }
 
-pub async fn d1(env: Arc<Env>, binding: String) -> Result<DatabaseConnection> {
+pub async fn d1(env: Arc<Env>, binding: String) -> Result<DatabaseConnection, Error> {
     let db = Database::connect_proxy(
         DbBackend::Sqlite,
         Arc::new(Box::new(D1Proxy { env, binding })),
     )
-    .await
-    .map_err(|e| Error::RustError(format!("Failed to connect to database: {:?}", e)))?;
+    .await?;
 
     let builder = db.get_database_backend();
 
@@ -201,8 +206,7 @@ pub async fn d1(env: Arc<Env>, binding: String) -> Result<DatabaseConnection> {
                 .if_not_exists(),
         ),
     )
-    .await
-    .map_err(|e| Error::RustError(format!("Failed to execute in database: {:?}", e)))?;
+    .await?;
 
     Ok(db)
 }
