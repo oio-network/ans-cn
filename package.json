@@ -7,8 +7,8 @@
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "turbo": "^2.1.3",
-    "wrangler": "^3.80.4"
+    "turbo": "^2.3.3",
+    "wrangler": "^3.99.0"
   },
   "packageManager": "pnpm@9.12.1"
 }
